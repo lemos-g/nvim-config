@@ -14,6 +14,15 @@ local function project_path()
   return vim.fn.fnamemodify(path, ":~:.")
 end
 
+-- Contagem de linhas do diff vinda do gitsigns (em vez do lualine rodar git
+-- diff por conta própria); nil fora de um arquivo versionado.
+local function gitsigns_diff()
+  local status = vim.b.gitsigns_status_dict
+  if status then
+    return { added = status.added, modified = status.changed, removed = status.removed }
+  end
+end
+
 -- Componentes de status do noice (ex.: comando pendente, "recording @q").
 local function noice_status(name)
   return {
@@ -49,7 +58,7 @@ return {
       lualine_x = {
         noice_status("command"),
         noice_status("mode"),
-        "diff",
+        { "diff", source = gitsigns_diff },
       },
       lualine_y = { "progress", "location" },
       lualine_z = {},
