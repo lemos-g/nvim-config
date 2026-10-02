@@ -1,10 +1,13 @@
 # nvim
 
 Config do Neovim para **ler e revisar** código, diffs e testes gerados por IA —
-não para editar à mão. Construída em camadas; esta é a camada 1:
-estrutura base + [lazy.nvim](https://github.com/folke/lazy.nvim) +
-[snacks.nvim](https://github.com/folke/snacks.nvim). Sem tema, LSP ou
-treesitter por enquanto.
+não para editar à mão. Construída em camadas:
+
+1. estrutura base + [lazy.nvim](https://github.com/folke/lazy.nvim) +
+   [snacks.nvim](https://github.com/folke/snacks.nvim)
+2. aparência: kanagawa, mini.icons, lualine, noice
+
+Sem LSP ou treesitter por enquanto.
 
 ```
 init.lua                 options → keymaps → lazy
@@ -12,6 +15,10 @@ lua/config/options.lua   leader e opções do editor
 lua/config/keymaps.lua   atalhos sem plugin (alternar teste ↔ fonte)
 lua/config/lazy.lua      bootstrap do lazy.nvim
 lua/plugins/snacks.lua   snacks.nvim: módulos, estilos e atalhos
+lua/plugins/kanagawa.lua tema
+lua/plugins/mini-icons.lua ícones (emula nvim-web-devicons)
+lua/plugins/lualine.lua  statusline
+lua/plugins/noice.lua    cmdline, busca e mensagens
 lazy-lock.json           versões fixadas (versionado)
 ```
 
@@ -49,6 +56,26 @@ Bordas: a fonte única é `vim.o.winborder = "rounded"`. No snacks,
 `border = true` significa "usar winborder"; só `lazygit`, `terminal` e `zen`
 precisaram disso explicitamente — o resto já vem assim.
 
+## Aparência
+
+| Plugin | Por quê |
+| --- | --- |
+| [kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim) | tema único, variante wave, fundo sólido; traz o tema do lualine e as cores do mini.icons |
+| [mini.icons](https://github.com/nvim-mini/mini.icons) | ícones para snacks (picker, explorer, dashboard) e, via mock de nvim-web-devicons, para o lualine |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | statusline global: modo · branch · diagnósticos, ícone e caminho relativo à raiz do repo · status do noice e diff · progresso e posição |
+| [noice.nvim](https://github.com/folke/noice.nvim) | `:` flutuante, `/` embaixo, mensagens longas em split, escrita/undo discretos na view mini, hover de LSP em markdown com borda |
+
+O `vim.notify` continua sendo o notifier do snacks: o noice está com
+`notify.enabled = false`, e a view `notify` dele usa o snacks como backend.
+
+Sem overrides de highlight: o kanagawa não tem grupos próprios para snacks e
+noice, mas os dois linkam seus grupos para `NormalFloat`/`FloatBorder`/
+`FloatTitle`, que o tema define.
+
+Fora de propósito: bufferline (a navegação é pelo picker de buffers),
+nvim-notify (o snacks já faz isso), nvim-web-devicons (o mini.icons emula),
+outros temas e seletor de temas.
+
 ## Atalhos
 
 Leader = `espaço`.
@@ -80,7 +107,8 @@ Leader = `espaço`.
 
 ## Dependências externas
 
-- Neovim ≥ 0.11 (usa `winborder`)
+- Neovim ≥ 0.11 (usa `winborder`); a UI experimental de mensagens do 0.12
+  (`ui2`) deve ficar desligada, pois o noice usa `vim.ui_attach`
 - git, ripgrep (`rg`), fd
 - lazygit
 - gh, autenticado (`gh auth login`)
