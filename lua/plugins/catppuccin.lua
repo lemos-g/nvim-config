@@ -12,6 +12,8 @@ return {
       noice = true,
       which_key = true,
       mini = { enabled = true },
+      gitsigns = true,
+      diffview = true,
     },
   },
 }
