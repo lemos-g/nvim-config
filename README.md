@@ -5,7 +5,7 @@ não para editar à mão. Construída em camadas:
 
 1. estrutura base + [lazy.nvim](https://github.com/folke/lazy.nvim) +
    [snacks.nvim](https://github.com/folke/snacks.nvim)
-2. aparência: kanagawa, mini.icons, lualine, noice
+2. aparência e UX: kanagawa, mini.icons, lualine, noice, which-key
 
 Sem LSP ou treesitter por enquanto.
 
@@ -19,6 +19,7 @@ lua/plugins/kanagawa.lua tema
 lua/plugins/mini-icons.lua ícones (emula nvim-web-devicons)
 lua/plugins/lualine.lua  statusline
 lua/plugins/noice.lua    cmdline, busca e mensagens
+lua/plugins/which-key.lua popup de atalhos e nomes dos grupos
 lazy-lock.json           versões fixadas (versionado)
 ```
 
@@ -56,7 +57,7 @@ Bordas: a fonte única é `vim.o.winborder = "rounded"`. No snacks,
 `border = true` significa "usar winborder"; só `lazygit`, `terminal` e `zen`
 precisaram disso explicitamente — o resto já vem assim.
 
-## Aparência
+## Aparência e UX
 
 | Plugin | Por quê |
 | --- | --- |
@@ -64,6 +65,7 @@ precisaram disso explicitamente — o resto já vem assim.
 | [mini.icons](https://github.com/nvim-mini/mini.icons) | ícones para snacks (picker, explorer, dashboard) e, via mock de nvim-web-devicons, para o lualine |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | statusline global: modo · branch · diagnósticos, ícone e caminho relativo à raiz do repo · status do noice e diff · progresso e posição |
 | [noice.nvim](https://github.com/folke/noice.nvim) | `:` flutuante, `/` embaixo, mensagens longas em split, escrita/undo discretos na view mini, hover de LSP em markdown com borda |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | popup com os atalhos após um prefixo, grupos nomeados e estado ligado/desligado dos toggles de `<leader>u` |
 
 O `vim.notify` continua sendo o notifier do snacks: o noice está com
 `notify.enabled = false`, e a view `notify` dele usa o snacks como backend.
@@ -78,31 +80,35 @@ outros temas e seletor de temas.
 
 ## Atalhos
 
-Leader = `espaço`.
+Leader = `espaço`. Apertar o leader e esperar mostra o popup do which-key;
+`<leader>?` mostra só os atalhos locais do buffer atual.
 
-**Encontrar** (`<leader>f`)
+**encontrar** (`<leader>f`)
 `ff` arquivos · `fg` grep · `fw` grep da palavra/seleção · `fb` buffers ·
 `fr` recentes · `fh` help · `fk` keymaps · `f/` linhas do buffer ·
 `fp` retomar último picker
 
-**Git** (`<leader>g`)
+**git** (`<leader>g`)
 `gg` lazygit · `gs` status · `gl` log · `gf` log do arquivo ·
 `gL` lazygit log · `gd` diff (hunks) · `gp` PRs (gh) · `gi` issues (gh)
 
-**Código** (`<leader>c`; os de LSP ficam inertes até a camada LSP)
+**código** (`<leader>c`; os de LSP ficam inertes até a camada LSP)
 `cr` referências · `cd` definição · `cD` declaração · `ci` implementações ·
 `cy` type definition · `cs` símbolos do arquivo · `cS` símbolos do workspace ·
 `cc` chamadas recebidas · `cC` chamadas feitas ·
 `ct` alterna `nome.ts` ↔ `nome.test.ts` em vsplit
 
-**Interface** (`<leader>u`)
+**interface** (`<leader>u`)
 `uw` wrap · `ul` número · `uL` número relativo · `ud` diagnósticos ·
 `uh` inlay hints · `ug` guias de indentação · `us` scroll suave ·
 `ua` animações · `uD` dim · `uz` zen · `uZ` zoom ·
 `un` histórico de notificações · `uN` descartar notificações
 
+**buffer** (`<leader>b`)
+`bd` fechar buffer
+
 **Geral**
-`<leader>e` explorer · `<leader>bd` fechar buffer ·
+`<leader>e` explorer · `<leader>?` atalhos locais do buffer ·
 `<C-/>` terminal · `]]` / `[[` próxima/anterior referência
 
 ## Dependências externas
