@@ -34,7 +34,7 @@ return {
   end,
   opts = {
     options = {
-      theme = "kanagawa",
+      theme = "auto",
       globalstatus = true,
       disabled_filetypes = { statusline = { "snacks_dashboard" } },
     },

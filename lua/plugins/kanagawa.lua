@@ -1,17 +1,11 @@
--- Tema único: kanagawa-wave, fundo sólido.
--- Carrega antes de tudo (priority > snacks) para os outros plugins já
--- encontrarem os highlights definidos.
+-- kanagawa: wave, dragon e lotus. Não tem opções de integração: os grupos de
+-- snacks, noice, which-key e mini.icons e o tema do lualine vêm sempre.
+-- O tema ativo é aplicado por lua/config/theme.lua.
 return {
   "rebelot/kanagawa.nvim",
-  lazy = false,
-  priority = 1100,
+  lazy = true,
   opts = {
-    theme = "wave",
-    background = { dark = "wave", light = "wave" },
+    background = { dark = "wave", light = "lotus" },
     transparent = false,
   },
-  config = function(_, opts)
-    require("kanagawa").setup(opts)
-    vim.cmd.colorscheme("kanagawa-wave")
-  end,
 }
