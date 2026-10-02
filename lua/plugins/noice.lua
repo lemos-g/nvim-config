@@ -29,7 +29,8 @@ return {
       },
     },
     routes = {
-      -- Escrita de arquivo e undo/redo vão para a view discreta "mini".
+      -- Escrita de arquivo, undo/redo e o "Hunk X of Y" do gitsigns (]h/[h)
+      -- vão para a view discreta "mini".
       {
         filter = {
           event = "msg_show",
@@ -37,6 +38,7 @@ return {
             { find = "%d+L, %d+B" },
             { find = "; after #%d+" },
             { find = "; before #%d+" },
+            { find = "^Hunk %d+ of %d+" },
           },
         },
         view = "mini",

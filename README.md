@@ -70,7 +70,7 @@ precisaram disso explicitamente — o resto já vem assim.
 | --- | --- |
 | [mini.icons](https://github.com/nvim-mini/mini.icons) | ícones para snacks (picker, explorer, dashboard) e, via mock de nvim-web-devicons, para o lualine |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | statusline global (`theme = "auto"`, acompanha o tema): modo · branch · diagnósticos, ícone e caminho relativo à raiz do repo · status do noice e diff · progresso e posição |
-| [noice.nvim](https://github.com/folke/noice.nvim) | `:` flutuante, `/` embaixo, mensagens longas em split, escrita/undo discretos na view mini, hover de LSP em markdown com borda |
+| [noice.nvim](https://github.com/folke/noice.nvim) | `:` flutuante, `/` embaixo, mensagens longas em split, escrita, undo e "Hunk X of Y" do gitsigns discretos na view mini, hover de LSP em markdown com borda |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | popup com os atalhos após um prefixo, grupos nomeados e estado ligado/desligado dos toggles de `<leader>u` |
 
 O `vim.notify` continua sendo o notifier do snacks: o noice está com
