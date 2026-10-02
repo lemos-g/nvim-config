@@ -4,6 +4,49 @@
 -- No snacks, `border = true` significa "usar winborder". notification,
 -- notification_history, input, snacks_image e os layouts do picker já vêm
 -- com `border = true`; só lazygit, terminal (float) e zen vêm sem borda.
+
+-- Caminho nos recentes/projetos do dashboard: nome em destaque e, depois, o
+-- diretório relativo à raiz do repositório (com o nome do repo na frente).
+-- Se não couber, corta no meio: "aporta/…/features/b3-import". Substitui o
+-- padrão do snacks, que abrevia tudo com pathshorten (~/D/a/a/…).
+local function dashboard_path(item, ctx)
+  local path = item.file
+  local name = vim.fn.fnamemodify(path, ":t")
+  local dir = vim.fn.fnamemodify(path, ":h")
+  local root = item.icon ~= "directory" and Snacks.git.get_root(path) or nil
+  if root then
+    local rel = dir:sub(#root + 2)
+    dir = vim.fn.fnamemodify(root, ":t") .. (rel ~= "" and "/" .. rel or "")
+  else
+    dir = vim.fn.fnamemodify(dir, ":~")
+  end
+  local room = (ctx.width or 60) - vim.api.nvim_strwidth(name) - 4
+  local head, rest = dir:match("^([^/]*/)(.*)$")
+  if head and vim.fn.strchars(dir) > room then
+    -- Tira pastas do começo (após a primeira) até caber.
+    while rest:find("/") and vim.fn.strchars(head .. "…/" .. rest) > room do
+      rest = rest:gsub("^[^/]*/", "")
+    end
+    dir = head .. "…/" .. rest
+  end
+  return { { name, hl = "file" }, { "  " .. dir, hl = "dir" } }
+end
+
+-- Rodapé do dashboard: o mesmo da seção "startup" do snacks, em português.
+local function dashboard_startup()
+  local stats = require("lazy.stats").stats()
+  local ms = math.floor(stats.startuptime * 100 + 0.5) / 100
+  return {
+    align = "center",
+    text = {
+      { "󰑣 Neovim carregou ", hl = "footer" },
+      { stats.loaded .. "/" .. stats.count, hl = "special" },
+      { " plugins em ", hl = "footer" },
+      { ms .. "ms", hl = "special" },
+    },
+  }
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -38,24 +81,27 @@ return {
     terminal = { enabled = true },
     dashboard = {
       enabled = true,
+      -- Header: sem `preset.header`, o snacks usa o logo NEOVIM em blocos.
+      -- Cores: só grupos do snacks (SnacksDashboard*), que seguem o tema.
       preset = {
-        header = "nvim · revisão",
         -- stylua: ignore
         keys = {
-          { icon = " ", key = "f", desc = "Arquivos",  action = ":lua Snacks.picker.files()" },
-          { icon = " ", key = "g", desc = "Grep",      action = ":lua Snacks.picker.grep()" },
-          { icon = " ", key = "r", desc = "Recentes",  action = ":lua Snacks.picker.recent()" },
-          { icon = " ", key = "l", desc = "Lazygit",   action = ":lua Snacks.lazygit()" },
-          { icon = " ", key = "e", desc = "Explorer",  action = ":lua Snacks.explorer()" },
+          { icon = "󰈞 ", key = "f", desc = "Arquivos",  action = ":lua Snacks.picker.files()" },
+          { icon = "󱎸 ", key = "g", desc = "Grep",      action = ":lua Snacks.picker.grep()" },
+          { icon = "󰋚 ", key = "r", desc = "Recentes",  action = ":lua Snacks.picker.recent()" },
+          { icon = "󰊢 ", key = "l", desc = "Lazygit",   action = ":lua Snacks.lazygit()" },
+          { icon = "󰙅 ", key = "e", desc = "Explorer",  action = ":lua Snacks.explorer()" },
           { icon = "󰒲 ", key = "L", desc = "Lazy",      action = ":Lazy" },
-          { icon = " ", key = "q", desc = "Sair",      action = ":qa" },
+          { icon = "󰍃 ", key = "q", desc = "Sair",      action = ":qa" },
         },
       },
+      formats = { file = dashboard_path },
       sections = {
         { section = "header" },
         { section = "keys", gap = 1, padding = 1 },
-        { icon = " ", title = "Recentes", section = "recent_files", cwd = true, indent = 2, padding = 1 },
-        { icon = " ", title = "Projetos", section = "projects", indent = 2, padding = 1 },
+        { icon = "󰋚 ", title = "Recentes", section = "recent_files", cwd = true, indent = 2, padding = 1 },
+        { icon = "󰉋 ", title = "Projetos", section = "projects", indent = 2, padding = 1 },
+        dashboard_startup,
       },
     },
 
