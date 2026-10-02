@@ -58,15 +58,6 @@ local function keys(...)
   return ret
 end
 
--- O diffview copia o DiffDelete inteiro para o DiffviewDiffAddAsDelete (texto
--- removido, lado esquerdo). No kanagawa o DiffDelete tem fg vermelho, e o
--- código fica vermelho sobre fundo avermelhado (contraste 2.0 no lotus).
--- Aqui fica só o fundo; nos outros temas o DiffDelete já não tem fg.
-local function fix_add_as_delete()
-  local del = vim.api.nvim_get_hl(0, { name = "DiffDelete", link = false })
-  vim.api.nvim_set_hl(0, "DiffviewDiffAddAsDelete", { bg = del.bg })
-end
-
 return {
   "sindrets/diffview.nvim",
   dependencies = { "nvim-mini/mini.icons" },
@@ -100,10 +91,4 @@ return {
       file_history_panel = keys(common, shadowing, { { "n", "X", false } }),
     },
   },
-  config = function(_, opts)
-    require("diffview").setup(opts)
-    fix_add_as_delete()
-    -- Registrado depois do autocmd do diffview, então roda depois dele.
-    vim.api.nvim_create_autocmd("ColorScheme", { callback = fix_add_as_delete })
-  end,
 }

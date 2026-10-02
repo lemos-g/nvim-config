@@ -22,6 +22,55 @@ local light = {
 
 local state_file = vim.fn.stdpath("state") .. "/theme"
 
+local function get_hl(name)
+  return vim.api.nvim_get_hl(0, { name = name, link = false })
+end
+
+-- Mistura duas cores (inteiros 0xRRGGBB); alpha é o peso de `a`.
+local function blend(a, b, alpha)
+  local out = 0
+  for _, shift in ipairs({ 16, 8, 0 }) do
+    local ca = bit.band(bit.rshift(a, shift), 255)
+    local cb = bit.band(bit.rshift(b, shift), 255)
+    out = out + bit.lshift(math.floor(ca * alpha + cb * (1 - alpha) + 0.5), shift)
+  end
+  return out
+end
+
+-- Único lugar com ajustes de highlight dos temas, por família ("kanagawa")
+-- ou variante ("tokyonight-day"). Rodam a cada troca de tema, inclusive no
+-- preview do seletor, e derivam as cores do próprio tema.
+M.overrides = {
+  -- O DiffDelete tem fg vermelho, e o diffview o copia para o texto removido
+  -- (DiffviewDiffAddAsDelete): código vermelho sobre fundo avermelhado,
+  -- contraste 2.0 no lotus. Sem fg, como nos outros temas. Como este
+  -- autocmd é registrado antes do diffview carregar, ele já lê o grupo
+  -- ajustado.
+  kanagawa = function()
+    vim.api.nvim_set_hl(0, "DiffDelete", { bg = get_hl("DiffDelete").bg })
+  end,
+  -- DiffText (#92a6d5) deixa o texto com contraste 2.4; metade do caminho até
+  -- o fundo sobe para 3.4 e segue distinto do DiffChange.
+  ["tokyonight-day"] = function()
+    local normal = get_hl("Normal")
+    vim.api.nvim_set_hl(0, "DiffText", { bg = blend(get_hl("DiffText").bg, normal.bg, 0.5) })
+  end,
+  -- DiffText invertido (texto creme sobre azul, 3.1): texto normal sobre um
+  -- azul claro sobe para 3.8 e continua distinto do DiffChange.
+  ["everforest-light"] = function()
+    local normal = get_hl("Normal")
+    vim.api.nvim_set_hl(0, "DiffText", { fg = normal.fg, bg = blend(get_hl("DiffText").bg, normal.bg, 0.3) })
+  end,
+}
+
+local function apply_overrides(name)
+  for _, key in ipairs({ name:match("^[^-]+"), name }) do
+    if M.overrides[key] then
+      M.overrides[key]()
+    end
+  end
+end
+
 local function read_saved()
   local ok, lines = pcall(vim.fn.readfile, state_file)
   return ok and lines[1] or nil
@@ -44,10 +93,14 @@ function M.setup()
       end
     end,
   })
-  -- Nome da variante ativa (vim.g.colors_name é só "kanagawa"/"everforest").
+  -- Nome da variante ativa (vim.g.colors_name é só "kanagawa"/"everforest")
+  -- e ajustes de highlight dela.
   vim.api.nvim_create_autocmd("ColorScheme", {
     group = group,
-    callback = function(ev) M.current = ev.match end,
+    callback = function(ev)
+      M.current = ev.match
+      apply_overrides(ev.match)
+    end,
   })
 
   local saved = read_saved()

@@ -10,13 +10,5 @@ return {
   opts = {
     background = "medium",
     transparent_background_level = 0,
-    -- Claro: o DiffText vem invertido (texto creme sobre azul, contraste
-    -- 3.1). Texto normal sobre um azul claro sobe para 3.8 e continua
-    -- distinto do DiffChange.
-    on_highlights = function(hl, palette)
-      if vim.o.background == "light" then
-        hl.DiffText = { fg = palette.fg, bg = require("everforest.colour_utility").blend(palette.blue, 0.3, palette.bg0) }
-      end
-    end,
   },
 }

@@ -16,7 +16,7 @@ init.lua                 options → keymaps → lazy → tema
 lua/config/options.lua   leader e opções do editor (inclui diffopt)
 lua/config/keymaps.lua   atalhos sem plugin (alternar teste ↔ fonte)
 lua/config/lazy.lua      bootstrap do lazy.nvim
-lua/config/theme.lua     tema ativo, seletor e persistência da escolha
+lua/config/theme.lua     tema ativo, seletor, persistência e ajustes de highlight
 lua/plugins/snacks.lua   snacks.nvim: módulos, estilos e atalhos
 lua/plugins/kanagawa.lua, catppuccin.lua, tokyonight.lua, everforest.lua
                          temas (um arquivo por tema)
@@ -136,10 +136,13 @@ anterior arquivo, `<C-e>` mostra/esconde o painel de arquivos, `g?` ajuda.
   vêm sempre. Todos trazem tema para o lualine.
 - snacks e noice linkam seus grupos para `NormalFloat`/`FloatBorder`/
   `FloatTitle`, que os quatro temas definem.
-- Ajustes de highlight, só onde o texto do diff ficava ilegível:
-  - kanagawa: o `DiffDelete` tem texto vermelho, e o diffview o copia para o
-    texto removido (vermelho sobre fundo avermelhado). Fica só o fundo
-    (`lua/plugins/diffview.lua`).
+- Ajustes de highlight ficam todos em `M.overrides` de
+  `lua/config/theme.lua` (nada nos arquivos dos temas), aplicados a cada
+  troca de tema e derivados das cores do próprio tema. Só onde o texto do
+  diff ficava ilegível:
+  - kanagawa: o `DiffDelete` tem fg vermelho, e o diffview o copia para o
+    texto removido (vermelho sobre fundo avermelhado). Fica só o fundo,
+    como nos outros temas.
   - tokyonight-day: `DiffText` mais claro (contraste do texto 2.4 → 3.4).
   - everforest-light: `DiffText` com texto normal sobre azul claro, em vez
     de invertido (3.1 → 3.8).
