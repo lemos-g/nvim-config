@@ -18,6 +18,13 @@ o.wrap = false
 o.scrolloff = 8
 o.sidescrolloff = 8
 
+-- Diff (diffview e :diffthis): histogram + linematch alinham lado a lado as
+-- linhas que mudaram pouco; linhas sem par do outro lado ficam hachuradas.
+-- O padrão do 0.12 já tem inline:char (destaque por caractere) e linematch:40.
+o.diffopt:remove("linematch:40")
+o.diffopt:append({ "algorithm:histogram", "linematch:60" })
+o.fillchars:append({ diff = "╱" })
+
 -- Janelas
 o.splitright = true
 o.splitbelow = true
