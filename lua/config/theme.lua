@@ -10,6 +10,7 @@ M.themes = {
   "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "catppuccin-latte",
   "tokyonight-night", "tokyonight-storm", "tokyonight-moon", "tokyonight-day",
   "everforest-dark", "everforest-light",
+  "vague",
 }
 
 -- Variantes claras; as demais são escuras.
