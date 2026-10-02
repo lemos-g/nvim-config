@@ -1,0 +1,7 @@
+# Estado local nunca vai para o git (tema escolhido, plugins e servidores
+# ficam em ~/.local/share/nvim). O lazy-lock.json É versionado.
+*.swp
+*~
+tags
+.luarc.json
+.DS_Store
