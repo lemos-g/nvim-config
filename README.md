@@ -7,12 +7,13 @@ não para editar à mão. Construída em camadas:
    [snacks.nvim](https://github.com/folke/snacks.nvim)
 2. aparência e UX: mini.icons, lualine, noice, which-key e quatro temas com
    seletor
+3. git: diffview (revisar) e gitsigns (ler), ao lado do lazygit (agir)
 
 Sem LSP ou treesitter por enquanto.
 
 ```
 init.lua                 options → keymaps → lazy → tema
-lua/config/options.lua   leader e opções do editor
+lua/config/options.lua   leader e opções do editor (inclui diffopt)
 lua/config/keymaps.lua   atalhos sem plugin (alternar teste ↔ fonte)
 lua/config/lazy.lua      bootstrap do lazy.nvim
 lua/config/theme.lua     tema ativo, seletor e persistência da escolha
@@ -24,6 +25,8 @@ lua/plugins/mini-icons.lua ícones (emula nvim-web-devicons)
 lua/plugins/lualine.lua  statusline
 lua/plugins/noice.lua    cmdline, busca e mensagens
 lua/plugins/which-key.lua popup de atalhos e nomes dos grupos
+lua/plugins/diffview.lua diff lado a lado para revisar
+lua/plugins/gitsigns.lua mudanças na lateral, preview e blame
 lazy-lock.json           versões fixadas (versionado)
 ```
 
@@ -76,6 +79,34 @@ O `vim.notify` continua sendo o notifier do snacks: o noice está com
 Fora de propósito: bufferline (a navegação é pelo picker de buffers),
 nvim-notify (o snacks já faz isso), nvim-web-devicons (o mini.icons emula).
 
+## Git
+
+Cada ferramenta tem um papel, e só o lazygit muda o repositório:
+
+| Ferramenta | Papel |
+| --- | --- |
+| [diffview.nvim](https://github.com/sindrets/diffview.nvim) | **revisar**: diff lado a lado (antes à esquerda, depois à direita), painel de arquivos em árvore, histórico |
+| lazygit (snacks) | **agir**: stage, commit, branch, rebase |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | **mostrar durante a leitura**: sinais na lateral, preview do trecho, blame |
+
+- Sem atalhos de ação no diffview nem no gitsigns. Os padrões do diffview que
+  fazem stage/restore (`-`, `s`, `S`, `U`, `X`), resolvem conflito
+  (`<leader>c*`, `dx`, `dX`, `1do`/`2do`/`3do`) ou sombreiam `<leader>e` e
+  `<leader>b` estão desligados.
+- Diff: `diffopt` com `algorithm:histogram` e `linematch:60` alinha lado a
+  lado as linhas que mudaram pouco; linhas sem par do outro lado aparecem
+  hachuradas (`fillchars` `diff:╱`). `enhanced_diff_hl` ligado.
+- Diff da branch: `main...HEAD` (desde o merge-base, como o diff do PR); usa
+  `master` se não houver `main`.
+- Sinais: a statuscolumn do snacks reconhece os sinais `GitSigns*` e os põe
+  no espaço de git dela — não há coluna extra.
+- O componente de diff do lualine lê os números do gitsigns.
+- Blame inline (texto discreto no fim da linha) começa desligado; `<leader>ub`
+  alterna.
+
+Dentro do diffview: `q` fecha (de qualquer tela), `Tab`/`Shift-Tab` próximo/
+anterior arquivo, `<C-e>` mostra/esconde o painel de arquivos, `g?` ajuda.
+
 ## Temas
 
 | Tema | Variantes |
@@ -97,12 +128,21 @@ nvim-notify (o snacks já faz isso), nvim-web-devicons (o mini.icons emula).
   viram dois colorschemes selecionáveis.
 - `background` é acertado por `lua/config/theme.lua` a cada troca, porque o
   kanagawa não o ajusta sozinho.
-- Integrações: catppuccin e tokyonight têm snacks, noice, which-key e
-  mini.icons ligados explicitamente (e a detecção automática pelo lazy.nvim
-  continua ligada para camadas futuras); kanagawa e everforest não têm opções
-  — os grupos vêm sempre. Todos trazem tema para o lualine.
-- Sem overrides de highlight: snacks e noice linkam seus grupos para
-  `NormalFloat`/`FloatBorder`/`FloatTitle`, que os quatro temas definem.
+- Integrações: catppuccin e tokyonight têm snacks, noice, which-key,
+  mini.icons e gitsigns ligados explicitamente, e o catppuccin também o
+  diffview (o tokyonight não tem grupo próprio para ele; usa os `Diff*` do
+  tema). A detecção automática pelo lazy.nvim continua ligada. kanagawa e
+  everforest não têm opções — os grupos (inclusive `Diff*` e `GitSigns*`)
+  vêm sempre. Todos trazem tema para o lualine.
+- snacks e noice linkam seus grupos para `NormalFloat`/`FloatBorder`/
+  `FloatTitle`, que os quatro temas definem.
+- Ajustes de highlight, só onde o texto do diff ficava ilegível:
+  - kanagawa: o `DiffDelete` tem texto vermelho, e o diffview o copia para o
+    texto removido (vermelho sobre fundo avermelhado). Fica só o fundo
+    (`lua/plugins/diffview.lua`).
+  - tokyonight-day: `DiffText` mais claro (contraste do texto 2.4 → 3.4).
+  - everforest-light: `DiffText` com texto normal sobre azul claro, em vez
+    de invertido (3.1 → 3.8).
 
 ## Atalhos
 
@@ -117,6 +157,10 @@ Leader = `espaço`. Apertar o leader e esperar mostra o popup do which-key;
 **git** (`<leader>g`)
 `gg` lazygit · `gs` status · `gl` log · `gf` log do arquivo ·
 `gL` lazygit log · `gd` diff (hunks) · `gp` PRs (gh) · `gi` issues (gh)
+diffview: `gv` não commitado · `gr` branch vs main (PR) ·
+`gt` testes alterados na branch (`*.test.ts`, `*.test.tsx`) ·
+`gF` histórico do arquivo · `gH` histórico do repo
+gitsigns: `gh` preview do trecho alterado · `gb` blame da linha
 
 **código** (`<leader>c`; os de LSP ficam inertes até a camada LSP)
 `cr` referências · `cd` definição · `cD` declaração · `ci` implementações ·
@@ -128,14 +172,16 @@ Leader = `espaço`. Apertar o leader e esperar mostra o popup do which-key;
 `uw` wrap · `ul` número · `uL` número relativo · `ud` diagnósticos ·
 `uh` inlay hints · `ug` guias de indentação · `us` scroll suave ·
 `ua` animações · `uD` dim · `uz` zen · `uZ` zoom ·
-`un` histórico de notificações · `uN` descartar notificações · `uC` temas
+`un` histórico de notificações · `uN` descartar notificações · `uC` temas ·
+`ub` blame inline
 
 **buffer** (`<leader>b`)
 `bd` fechar buffer
 
 **Geral**
 `<leader>e` explorer · `<leader>?` atalhos locais do buffer ·
-`<C-/>` terminal · `]]` / `[[` próxima/anterior referência
+`<C-/>` terminal · `]]` / `[[` próxima/anterior referência ·
+`]h` / `[h` próximo/anterior trecho alterado (no diff, mesmo que `]c`/`[c`)
 
 ## Dependências externas
 
