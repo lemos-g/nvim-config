@@ -112,6 +112,7 @@ return {
     { "<leader>uZ", function() Snacks.zen.zoom() end, desc = "Zoom" },
     { "<leader>un", function() Snacks.notifier.show_history() end, desc = "Histórico de notificações" },
     { "<leader>uN", function() Snacks.notifier.hide() end, desc = "Descartar notificações" },
+    { "<leader>uC", function() require("config.theme").pick() end, desc = "Temas" },
 
     -- Geral
     { "<leader>e", function() Snacks.explorer() end, desc = "Explorer" },
