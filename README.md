@@ -5,7 +5,7 @@ não para editar à mão. Construída em camadas:
 
 1. estrutura base + [lazy.nvim](https://github.com/folke/lazy.nvim) +
    [snacks.nvim](https://github.com/folke/snacks.nvim)
-2. aparência e UX: mini.icons, lualine, noice, which-key e quatro temas com
+2. aparência e UX: mini.icons, lualine, noice, which-key e cinco temas com
    seletor
 3. git: diffview (revisar) e gitsigns (ler), ao lado do lazygit (agir)
 
@@ -18,7 +18,8 @@ lua/config/keymaps.lua   atalhos sem plugin (alternar teste ↔ fonte)
 lua/config/lazy.lua      bootstrap do lazy.nvim
 lua/config/theme.lua     tema ativo, seletor, persistência e ajustes de highlight
 lua/plugins/snacks.lua   snacks.nvim: módulos, estilos e atalhos
-lua/plugins/kanagawa.lua, catppuccin.lua, tokyonight.lua, everforest.lua
+lua/plugins/kanagawa.lua, catppuccin.lua, tokyonight.lua, everforest.lua,
+  vague.lua
                          temas (um arquivo por tema)
 colors/everforest-*.lua  everforest claro/escuro como colorschemes próprios
 lua/plugins/mini-icons.lua ícones (emula nvim-web-devicons)
@@ -115,9 +116,10 @@ anterior arquivo, `<C-e>` mostra/esconde o painel de arquivos, `g?` ajuda.
 | [catppuccin](https://github.com/catppuccin/nvim) | mocha, macchiato, frappe, latte (clara) |
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | night, storm, moon, day (clara) |
 | [everforest-nvim](https://github.com/neanias/everforest-nvim) | dark, light (clara) |
+| [vague.nvim](https://github.com/vague-theme/vague.nvim) | vague (só escura) |
 
 - `<leader>uC` abre o seletor (picker de colorschemes do snacks) com preview
-  ao vivo. A lista mostra só essas 13 variantes; `Esc` volta ao tema anterior.
+  ao vivo. A lista mostra só essas 14 variantes; `Esc` volta ao tema anterior.
 - A escolha fica salva em `~/.local/state/nvim/theme` (`stdpath("state")`),
   fora do repositório, e é aplicada na inicialização antes do dashboard. Sem
   arquivo, ou com um tema que não existe mais, abre em `kanagawa-wave`.
@@ -133,9 +135,15 @@ anterior arquivo, `<C-e>` mostra/esconde o painel de arquivos, `g?` ajuda.
   diffview (o tokyonight não tem grupo próprio para ele; usa os `Diff*` do
   tema). A detecção automática pelo lazy.nvim continua ligada. kanagawa e
   everforest não têm opções — os grupos (inclusive `Diff*` e `GitSigns*`)
-  vêm sempre. Todos trazem tema para o lualine.
+  vêm sempre. Esses quatro trazem tema para o lualine.
+- vague: sem opções de integração. Tem grupos próprios para o picker e o
+  input do snacks e para o mini; os outros plugins herdam dos grupos base
+  (gitsigns via `Added`/`Changed`/`Removed`, which-key e noice via
+  `NormalFloat`/`FloatBorder`, diffview via `Diff*`) e o lualine usa o
+  tema `auto`, gerado das cores dele. O terminal usa o mesmo fundo
+  (`#141415`) com o tema oficial do Ghostty (vague-theme/vague-ghostty).
 - snacks e noice linkam seus grupos para `NormalFloat`/`FloatBorder`/
-  `FloatTitle`, que os quatro temas definem.
+  `FloatTitle`, que os cinco temas definem.
 - Ajustes de highlight ficam todos em `M.overrides` de
   `lua/config/theme.lua` (nada nos arquivos dos temas), aplicados a cada
   troca de tema e derivados das cores do próprio tema. Só onde o texto do
