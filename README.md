@@ -8,8 +8,8 @@ não para editar à mão. Construída em camadas:
 2. aparência e UX: mini.icons, lualine, noice, which-key e cinco temas com
    seletor
 3. git: diffview (revisar) e gitsigns (ler), ao lado do lazygit (agir)
-
-Sem LSP ou treesitter por enquanto.
+4. leitura de código: treesitter, treesitter-context e LSP (Mason +
+   nvim-lspconfig) para navegar, sem formatar nem completar
 
 ```
 init.lua                 options → keymaps → lazy → tema
@@ -28,6 +28,9 @@ lua/plugins/noice.lua    cmdline, busca e mensagens
 lua/plugins/which-key.lua popup de atalhos e nomes dos grupos
 lua/plugins/diffview.lua diff lado a lado para revisar
 lua/plugins/gitsigns.lua mudanças na lateral, preview e blame
+lua/plugins/treesitter.lua parsers (nvim-treesitter main) e highlight nativo
+lua/plugins/treesitter-context.lua função/describe atual fixo no topo
+lua/plugins/lsp.lua      servidores, diagnósticos e atalhos de navegação
 lazy-lock.json           versões fixadas (versionado)
 ```
 
@@ -108,6 +111,35 @@ Cada ferramenta tem um papel, e só o lazygit muda o repositório:
 Dentro do diffview: `q` fecha (de qualquer tela), `Tab`/`Shift-Tab` próximo/
 anterior arquivo, `<C-e>` mostra/esconde o painel de arquivos, `g?` ajuda.
 
+## LSP e leitura de código
+
+Só para entender código: navegar, hover, diagnósticos e inlay hints.
+
+| Servidor | Para quê |
+| --- | --- |
+| vtsls | TypeScript/TSX; usa o TypeScript do `node_modules` do projeto (`autoUseWorkspaceTsdk`), o mesmo do typecheck |
+| eslint | diagnósticos do ESLint (`workingDirectories` automático: um config por app no monorepo) |
+| tailwindcss | hover das classes |
+| lua_ls | esta config; conhece `vim.*` e o global `Snacks` |
+
+- API nativa do 0.11+ (`vim.lsp.config` / `vim.lsp.enable`); o
+  nvim-lspconfig só fornece as configs padrão. Carrega ao abrir um arquivo.
+- O Mason instala os quatro servidores sozinho na primeira abertura de
+  arquivo (`ensure_installed`; precisa de node/npm). Não roda em
+  `--headless`: lá, use `:MasonInstall`.
+- Diagnósticos: ícones na lateral, virtual text só com a mensagem (`●`), sem
+  sublinhado, ordenados por severidade. `<leader>cd` mostra o completo.
+- Inlay hints (parâmetros, tipos de variáveis e retornos) vêm configurados no
+  vtsls, mas desligados; `<leader>uh` alterna.
+- Treesitter: nvim-treesitter na branch `main` (a reescrita para 0.12; a
+  `master` está congelada), highlight nativo. O treesitter-context fixa no
+  topo até 3 linhas de contexto (função, `describe`, `it`).
+- Fora de propósito: formatador/format-on-save (o Prettier do projeto é o
+  dono; formatar aqui geraria diff que não veio da IA), autocomplete, code
+  actions e rename. Os mapas padrão do Neovim `grn`, `gra`, `grr`, `gri`,
+  `grt` e `grx` são apagados — sem rename/code action, e `gr` responde na
+  hora.
+
 ## Temas
 
 | Tema | Variantes |
@@ -173,11 +205,18 @@ diffview: `gv` não commitado · `gr` branch vs main (PR) ·
 `gF` histórico do arquivo · `gH` histórico do repo
 gitsigns: `gh` preview do trecho alterado · `gb` blame da linha
 
-**código** (`<leader>c`; os de LSP ficam inertes até a camada LSP)
-`cr` referências · `cd` definição · `cD` declaração · `ci` implementações ·
-`cy` type definition · `cs` símbolos do arquivo · `cS` símbolos do workspace ·
+**código** (`<leader>c`)
+`cd` diagnóstico da linha (float) · `cD` declaração ·
 `cc` chamadas recebidas · `cC` chamadas feitas ·
 `ct` alterna `nome.ts` ↔ `nome.test.ts` em vsplit
+
+**símbolos** (`<leader>s`)
+`ss` símbolos do arquivo · `sS` símbolos do workspace ·
+`sd` diagnósticos do arquivo · `sD` diagnósticos do workspace
+
+**LSP** (só em buffers com servidor; abrem no picker)
+`gd` definição · `gr` referências · `gI` implementações ·
+`gy` definição de tipo · `K` hover
 
 **interface** (`<leader>u`)
 `uw` wrap · `ul` número · `uL` número relativo · `ud` diagnósticos ·
@@ -196,8 +235,10 @@ gitsigns: `gh` preview do trecho alterado · `gb` blame da linha
 
 ## Dependências externas
 
-- Neovim ≥ 0.11 (usa `winborder`); a UI experimental de mensagens do 0.12
-  (`ui2`) deve ficar desligada, pois o noice usa `vim.ui_attach`
+- Neovim ≥ 0.12 (`winborder`, `vim.lsp.config`, nvim-treesitter main); a
+  UI experimental de mensagens do 0.12 (`ui2`) deve ficar desligada, pois o
+  noice usa `vim.ui_attach`
+- node/npm (o Mason instala os servidores de LSP)
 - git, ripgrep (`rg`), fd
 - lazygit
 - gh, autenticado (`gh auth login`)

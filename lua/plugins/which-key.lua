@@ -14,6 +14,7 @@ return {
       { "<leader>f", group = "encontrar", icon = { icon = " ", color = "green" } },
       { "<leader>g", group = "git", icon = { cat = "filetype", name = "git" } },
       { "<leader>c", group = "código", icon = { icon = " ", color = "orange" } },
+      { "<leader>s", group = "símbolos", icon = { icon = "󰊕 ", color = "purple" } },
       { "<leader>u", group = "interface", icon = { icon = "󰙵 ", color = "cyan" } },
       { "<leader>b", group = "buffer", icon = { icon = "󰈔", color = "cyan" } },
     },

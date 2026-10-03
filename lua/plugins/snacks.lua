@@ -142,16 +142,17 @@ return {
     { "<leader>gp", function() Snacks.picker.gh_pr() end, desc = "GitHub PRs" },
     { "<leader>gi", function() Snacks.picker.gh_issue() end, desc = "GitHub issues" },
 
-    -- Código (LSP; inertes até existir um servidor anexado)
-    { "<leader>cr", function() Snacks.picker.lsp_references() end, desc = "Referências", nowait = true },
-    { "<leader>cd", function() Snacks.picker.lsp_definitions() end, desc = "Definição" },
+    -- Código (LSP). gd/gr/gI/gy/K e <leader>cd ficam em lua/plugins/lsp.lua,
+    -- locais ao buffer com servidor anexado.
     { "<leader>cD", function() Snacks.picker.lsp_declarations() end, desc = "Declaração" },
-    { "<leader>ci", function() Snacks.picker.lsp_implementations() end, desc = "Implementações" },
-    { "<leader>cy", function() Snacks.picker.lsp_type_definitions() end, desc = "Type definition" },
-    { "<leader>cs", function() Snacks.picker.lsp_symbols() end, desc = "Símbolos do arquivo" },
-    { "<leader>cS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Símbolos do workspace" },
     { "<leader>cc", function() Snacks.picker.lsp_incoming_calls() end, desc = "Chamadas recebidas" },
     { "<leader>cC", function() Snacks.picker.lsp_outgoing_calls() end, desc = "Chamadas feitas" },
+
+    -- Símbolos e diagnósticos
+    { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "Símbolos do arquivo" },
+    { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Símbolos do workspace" },
+    { "<leader>sd", function() Snacks.picker.diagnostics_buffer() end, desc = "Diagnósticos do arquivo" },
+    { "<leader>sD", function() Snacks.picker.diagnostics() end, desc = "Diagnósticos do workspace" },
 
     -- Interface
     { "<leader>uz", function() Snacks.zen() end, desc = "Zen" },
