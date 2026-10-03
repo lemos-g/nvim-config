@@ -80,6 +80,11 @@ return {
     file_panel = {
       listing_style = "tree",
     },
+    -- O padrão (16 linhas) toma espaço demais do diff. O file_panel fica à
+    -- esquerda e não é afetado.
+    file_history_panel = {
+      win_config = { position = "bottom", height = 10 },
+    },
     keymaps = {
       view = keys(common, shadowing, conflict),
       diff3 = { { { "n", "x" }, "2do", false }, { { "n", "x" }, "3do", false } },

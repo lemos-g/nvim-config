@@ -28,6 +28,7 @@ o.fillchars:append({ diff = "╱" })
 -- Janelas
 o.splitright = true
 o.splitbelow = true
+o.mouse = "a" -- arrastar divisórias em qualquer modo
 
 -- Busca
 o.ignorecase = true

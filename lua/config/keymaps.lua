@@ -26,3 +26,9 @@ local function toggle_test_file()
 end
 
 vim.keymap.set("n", "<leader>ct", toggle_test_file, { desc = "Alternar teste ↔ fonte" })
+
+-- Redimensionar a janela atual (também dá para arrastar a divisória com o mouse).
+vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Aumentar altura da janela" })
+vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Diminuir altura da janela" })
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Diminuir largura da janela" })
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Aumentar largura da janela" })
